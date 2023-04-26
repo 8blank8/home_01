@@ -68,14 +68,20 @@ app.post('/videos', (req: RequestWithBody<VideosCreateModel>, res: Response)=>{
         return
     }
 
+    const addDate = () =>{
+        const date = new Date()
+        date.setDate(date.getDate() + 1)
+        return date.toISOString()
+    }
+
     const createVideo: VideosType = {
         id: +(new Date()),
         title: req.body.title,
         author: req.body.author,
         canBeDownloaded: true,
         minAgeRestriction: null,
-        createdAt: new Date().toISOString(),
-        publicationDate: new Date().toISOString(),
+        createdAt: addDate(),
+        publicationDate: addDate(),
         availableResolutions: req.body.availableResolutions
     }
 
