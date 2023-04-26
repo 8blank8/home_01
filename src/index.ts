@@ -2,6 +2,7 @@ import express, {Request, Response} from "express";
 import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody } from "./types";
 import { VideosCreateModel } from "./models/VideoCreateModel";
 import { VideoUriParamsIdModel } from "./models/VideoUriParamsIdModel";
+import { ErrorMessagesModel } from "./models/ErrorMesageModel";
 
 export const app = express();
 const port = 3000;
@@ -69,56 +70,66 @@ app.put('/videos/:id', (req: RequestWithParamsAndBody<VideoUriParamsIdModel, Vid
 
     const video = db.videos.find(item => item.id === +req.params.id)
 
+    const error: ErrorMessagesModel = {
+        errorsMessages: []
+    }
+
     if(!video){
         res.sendStatus(404)
         return
     }
 
     if(title.length > 40 || title.length < 1 || !title || typeof title !== 'string') {
-        res.status(400).send({
+        error.errorsMessages.push({
             message: 'wrong data title',
-            field: `title: ${title}`
+            field: 'title'
         })
+        res.status(400).send(error)
         return
     }
 
     if(author.length > 20 || author.length < 1 || !author || typeof author !== 'string'){
-        res.status(400).send({
+        error.errorsMessages.push({
             message: 'worong data author',
-            field: `author: ${author}`
+            field: 'author'
         })
+        res.status(400).send(error)
         return
     }
 
     if(availableResolutions.length < 1){
-        res.status(400).send({
+        error.errorsMessages.push({
             message: 'min length 1',
-            field: `availableResolutions: ${availableResolutions}`
+            field: 'availableResolutions'
         })
+        res.status(400).send(error)
         return
     }
 
     if(typeof canBeDownloaded !== 'boolean'){
-        res.status(400).send({
+        error.errorsMessages.push({
             message: 'canBeDownloaded must be a boolean',
-            field: `canBeDownloaded: ${typeof canBeDownloaded}`
+            field: 'canBeDownloaded'
         })
+        res.status(400).send(error)
         return
     }
     
     if(Number(minAgeRestriction) < 1 || Number(minAgeRestriction) < 19 || typeof minAgeRestriction !== 'number'){
-        res.status(400).send({
+        error.errorsMessages.push({
             message: 'wrong data minAgeRestriction',
-            field: `minAgeRestriction: ${minAgeRestriction}`
+            field: 'minAgeRestriction'
         })
+        res.status(400).send(error)
         return
     }
 
     if(typeof publicationDate !== 'string'){
-        res.status(400).send({
+        error.errorsMessages.push({
             message: 'publicationDate must be a string',
-            field: `publicationDate: ${typeof minAgeRestriction}`
+            field: 'publicationDate'
         })
+        res.status(400).send(error)
         return
     }
  

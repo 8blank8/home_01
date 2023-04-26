@@ -3,4 +3,6 @@ type ErrorMessageModel = {
     field: string
 }
 
-export type ErrorMessagesModel = Array<ErrorMessageModel> 
+export type ErrorMessagesModel = {
+    errorsMessages: Array<ErrorMessageModel> 
+} 
