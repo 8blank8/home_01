@@ -80,8 +80,8 @@ app.post('/videos', (req: RequestWithBody<VideosCreateModel>, res: Response)=>{
         author: req.body.author,
         canBeDownloaded: true,
         minAgeRestriction: null,
-        createdAt: addDate(),
-        publicationDate: addDate(),
+        createdAt: new Date().toISOString(),
+        publicationDate: new Date().toISOString(),
         availableResolutions: req.body.availableResolutions
     }
 
