@@ -3,6 +3,7 @@ import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody } from "./
 import { VideosCreateModel } from "./models/VideoCreateModel";
 import { VideoUriParamsIdModel } from "./models/VideoUriParamsIdModel";
 import { ErrorMessagesModel } from "./models/ErrorMesageModel";
+import { validationAgeRestriction, validationAuthor, validationResolution, validationTitle, validationType } from "./validations/validator";
 
 export const app = express();
 const port = 3000;
@@ -41,11 +42,29 @@ app.get('/videos/:id', (req: RequestWithParams<VideoUriParamsIdModel>, res: Resp
 })
 
 app.post('/videos', (req: RequestWithBody<VideosCreateModel>, res: Response)=>{
-    if(!req.body.title || !req.body.author || !req.body){
-        res.status(400).send({
-            message: 'wrong data',
-            field: `${req.body}`
-        })
+    const {title, author, availableResolutions} = req.body
+
+    const error: ErrorMessagesModel = {
+        errorsMessages: []
+    }
+
+    const errorTitle = validationTitle(title, 'title')
+    if(errorTitle !== undefined){
+        error.errorsMessages.push(errorTitle)
+    }
+
+    const errorAuthor = validationAuthor(author, 'author')
+    if(errorAuthor !== undefined){
+        error.errorsMessages.push(errorAuthor)
+    }
+    
+    const errorResolution = validationResolution('availableResolutions', availableResolutions)
+    if(errorResolution !== undefined){
+        error.errorsMessages.push(errorResolution)
+    }
+
+    if(error.errorsMessages.length != 0){
+        res.status(400).send(error)
         return
     }
 
@@ -79,56 +98,37 @@ app.put('/videos/:id', (req: RequestWithParamsAndBody<VideoUriParamsIdModel, Vid
         return
     }
 
-    if(title.length > 40 || title.length < 1 || !title || typeof title !== 'string') {
-        error.errorsMessages.push({
-            message: 'wrong data title',
-            field: 'title'
-        })
-        res.status(400).send(error)
-        return
+    const errorTitle = validationTitle(title, 'title')
+    if(errorTitle !== undefined){
+        error.errorsMessages.push(errorTitle)
     }
 
-    if(author.length > 20 || author.length < 1 || !author || typeof author !== 'string'){
-        error.errorsMessages.push({
-            message: 'worong data author',
-            field: 'author'
-        })
-        res.status(400).send(error)
-        return
-    }
-
-    if(availableResolutions.length < 1){
-        error.errorsMessages.push({
-            message: 'min length 1',
-            field: 'availableResolutions'
-        })
-        res.status(400).send(error)
-        return
-    }
-
-    if(typeof canBeDownloaded !== 'boolean'){
-        error.errorsMessages.push({
-            message: 'canBeDownloaded must be a boolean',
-            field: 'canBeDownloaded'
-        })
-        res.status(400).send(error)
-        return
+    const errorAuthor = validationAuthor(author, 'author')
+    if(errorAuthor !== undefined){
+        error.errorsMessages.push(errorAuthor)
     }
     
-    if(Number(minAgeRestriction) < 1 || Number(minAgeRestriction) < 19 || typeof minAgeRestriction !== 'number'){
-        error.errorsMessages.push({
-            message: 'wrong data minAgeRestriction',
-            field: 'minAgeRestriction'
-        })
-        res.status(400).send(error)
-        return
+    const errorResolution = validationResolution('availableResolutions', availableResolutions)
+    if(errorResolution !== undefined){
+        error.errorsMessages.push(errorResolution)
     }
 
-    if(typeof publicationDate !== 'string'){
-        error.errorsMessages.push({
-            message: 'publicationDate must be a string',
-            field: 'publicationDate'
-        })
+    const errorDownloaded = validationType('canBeDownloaded', ['boolean'], canBeDownloaded)
+    if(errorDownloaded !== undefined){
+        error.errorsMessages.push(errorDownloaded)
+    }
+
+    const errorAgeRestriction = validationAgeRestriction('minAgeRestriction', minAgeRestriction)
+    if(errorAgeRestriction !== undefined){
+        error.errorsMessages.push(errorAgeRestriction)
+    }
+
+    const errorPublicationDate= validationType('publicationDate', ['string'], publicationDate)
+    if(errorPublicationDate !== undefined){
+        error.errorsMessages.push(errorPublicationDate)
+    }
+
+    if(error.errorsMessages.length != 0){
         res.status(400).send(error)
         return
     }
