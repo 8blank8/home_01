@@ -69,8 +69,8 @@ app.post('/videos', (req: RequestWithBody<VideosCreateModel>, res: Response) => 
    }
 
 
-   const addDate = () => {
-      const date = new Date()
+   const addDate = (str: string) => {
+      const date = new Date(str)
       date.setDate(date.getDate() + 1)
       return date.toISOString()
    }
@@ -82,8 +82,8 @@ app.post('/videos', (req: RequestWithBody<VideosCreateModel>, res: Response) => 
       author: req.body.author,
       canBeDownloaded: true,
       minAgeRestriction: null,
-      createdAt: addDate(),
-      publicationDate: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+      publicationDate: addDate(new Date().toISOString()),
       availableResolutions: req.body.availableResolutions
    }
 
