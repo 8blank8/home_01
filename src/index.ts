@@ -80,7 +80,7 @@ app.post('/videos', (req: RequestWithBody<VideosCreateModel>, res: Response) => 
       id: +(new Date()),
       title: req.body.title,
       author: req.body.author,
-      canBeDownloaded: true,
+      canBeDownloaded: false,
       minAgeRestriction: null,
       createdAt: new Date().toISOString(),
       publicationDate: addDate(new Date().toISOString()),
