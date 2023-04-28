@@ -38,16 +38,6 @@ app.get('/videos/:id', (req: RequestWithParams<VideoUriParamsIdModel>, res: Resp
       return
    }
 
-   const addDate = (str: string) => {
-      const date = new Date(str)
-      date.setDate(date.getDate() + 1)
-      return date.toISOString()
-   }
-
-   video.publicationDate = addDate(video.publicationDate)
-   video.createdAt = addDate(video.createdAt)
-
-
    res.status(200).send(video)
 })
 
@@ -79,6 +69,12 @@ app.post('/videos', (req: RequestWithBody<VideosCreateModel>, res: Response) => 
    }
 
 
+   const addDate = () => {
+      const date = new Date()
+      date.setDate(date.getDate() + 1)
+      return date.toISOString()
+   }
+
 
    const createVideo: VideosType = {
       id: +(new Date()),
@@ -86,7 +82,7 @@ app.post('/videos', (req: RequestWithBody<VideosCreateModel>, res: Response) => 
       author: req.body.author,
       canBeDownloaded: true,
       minAgeRestriction: null,
-      createdAt: new Date().toISOString(),
+      createdAt: addDate(),
       publicationDate: new Date().toISOString(),
       availableResolutions: req.body.availableResolutions
    }
