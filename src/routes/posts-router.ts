@@ -1,8 +1,8 @@
 import { Router, Request, Response } from "express";
 import { postsRepository } from "../repositories/posts-repository";
-import { validationCreatePost } from "../validations/validations-posts";
+import { validationCreateOrUpdatePost } from "../validations/validations-posts";
 import { autorizationMiddleware } from "../middlewares/authorization-middleware"
-import { validationUpdatePost } from "../validations/validations-posts";
+// import { validationUpdatePost } from "../validations/validations-posts";
 
 
 
@@ -25,7 +25,7 @@ postsRouter.get('/:id', (req: Request, res: Response)=>{
 
 postsRouter.post('/', 
 autorizationMiddleware,
-validationCreatePost,
+validationCreateOrUpdatePost,
 (req: Request, res: Response)=>{
     const createdPost = postsRepository.createPost(
         req.body.title, 
@@ -39,7 +39,7 @@ validationCreatePost,
 
 postsRouter.put('/:id', 
 autorizationMiddleware,
-validationUpdatePost,
+validationCreateOrUpdatePost,
 (req: Request, res: Response)=>{
     const isUpadate = postsRepository.updatePost(
         req.params.id, 
