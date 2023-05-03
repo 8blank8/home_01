@@ -46,7 +46,6 @@ export const videoRepository = {
         if (!video) {
            return false
         }
-     
     
         video.title = title
         video.author = author
@@ -56,8 +55,6 @@ export const videoRepository = {
         video.publicationDate = publicationDate
         
         return video
-     
-        
     },
 
     deleteVideoById(id:number){
