@@ -7,7 +7,7 @@ export const inputValidationMiddleware = (req: Request, res: Response, next: Nex
     if(!errors.isEmpty()){
       
       const err = errors.array().map(item => ({message: item.msg, field: item.path}))
-       res.status(400).send({"errors":  err})
+       res.status(400).send({errorsMessages:  err})
     }else{
        next()
     }
