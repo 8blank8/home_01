@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { body } from "express-validator";
 import { blogsRepository } from "../repositories/blogs-repository";
 
-export const validationCreateOrUpdatePost = [
+export const validationCreatePost = [
     body('title').notEmpty().withMessage('title is required'),
     body('title').isString().isLength({min: 1, max: 30}).withMessage('title length min 1 max 30'),
     body('shortDescription').notEmpty().withMessage('shortDescription is required'),
